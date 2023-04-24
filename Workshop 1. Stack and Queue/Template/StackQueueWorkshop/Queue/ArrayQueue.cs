@@ -38,6 +38,15 @@ namespace StackQueueWorkshop.Queue
                 this.items = newItemsArray;
             }
             this.items[this.itemsCount-1] = element;
+
+            int halfArraySize = this.items.Length/2;
+            int emptyArraySpaces = Math.Abs(this.headIndex +1 - this.itemsCount);
+            if (halfArraySize < emptyArraySpaces)
+            {
+                var newItemsArray = new T[halfArraySize];
+                Array.Copy(this.items, this.headIndex, newItemsArray, 0, this.itemsCount);
+                this.headIndex = 0;
+            }
         }
 
         public T Dequeue()
