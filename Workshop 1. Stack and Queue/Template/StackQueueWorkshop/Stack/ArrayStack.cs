@@ -55,11 +55,7 @@ namespace StackQueueWorkshop.Stack
 
         public T Pop()
         {
-            if (this.IsEmpty == true)
-            {
-                string errorMessage = "There are no items stored in the Stack!";
-                throw new InvalidOperationException(errorMessage);
-            }
+            ValidateEmptyStack();
             var topItem = this.items[this.top];
             this.items[this.top] = default;
             this.top--;
@@ -68,12 +64,17 @@ namespace StackQueueWorkshop.Stack
 
         public T Peek()
         {
+            ValidateEmptyStack();
+            return this.items[this.top];
+        }
+
+        private void ValidateEmptyStack()
+        {
             if (this.IsEmpty == true)
             {
                 string errorMessage = "There are no items stored in the Stack!";
                 throw new InvalidOperationException(errorMessage);
             }
-            return this.items[this.top];
         }
     }
 }

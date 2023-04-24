@@ -36,11 +36,7 @@ namespace StackQueueWorkshop.Stack
 
         public T Pop()
         {
-            if (this.size == 0)
-            {
-                string errorMessage = "There are no more elements in the Stack!";
-                throw new InvalidOperationException(errorMessage);
-            }
+            ValidateEmptyStack();
             var popElement = this.top.Data;
             this.top = this.top.Next;
             size--;
@@ -50,12 +46,17 @@ namespace StackQueueWorkshop.Stack
 
         public T Peek()
         {
+            ValidateEmptyStack();
+            return this.top.Data;
+        }
+
+        private void ValidateEmptyStack()
+        {
             if (this.size == 0)
             {
                 string errorMessage = "There are no more elements in the Stack!";
                 throw new InvalidOperationException(errorMessage);
             }
-            return this.top.Data;
         }
     }
 }
