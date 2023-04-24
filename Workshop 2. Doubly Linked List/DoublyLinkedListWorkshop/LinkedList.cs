@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace DoublyLinkedListWorkshop
 {
@@ -12,7 +13,8 @@ namespace DoublyLinkedListWorkshop
         {
             get
             {
-                throw new NotImplementedException();
+                ValidateEmptyList();
+                return this.head.Value;
             }
         }
 
@@ -20,7 +22,8 @@ namespace DoublyLinkedListWorkshop
         {
             get
             {
-                throw new NotImplementedException();
+                ValidateEmptyList();
+                return this.tail.Value;
             }
         }
 
@@ -28,47 +31,119 @@ namespace DoublyLinkedListWorkshop
         {
             get
             {
-                throw new NotImplementedException();
+                int elementsCount = 0;
+                if (this.head == null)
+                {
+                    return elementsCount;
+                }                
+                var enumerator = new ListEnumerator(this.head);
+                while (enumerator.MoveNext())
+                {
+                    elementsCount++;
+                }
+                return elementsCount;
             }
             private set
             {
-                throw new NotImplementedException();
+                
             }
         }
 
         public void AddFirst(T value)
         {
-            throw new NotImplementedException();
+            var newNode = new Node(value);
+            if (this.head == null)
+            {
+                this.head = newNode;
+                this.tail = newNode;
+            }
+            else
+            {
+                this.head.Prev = newNode;
+                newNode.Next = this.head;
+                this.head = newNode;
+            }
+
         }
 
         public void AddLast(T value)
         {
-            throw new NotImplementedException();
+            var newNode = new Node(value);
+            if (this.tail == null)
+            {
+                this.head = newNode;
+                this.tail = newNode;                
+            }
+            else
+            {
+                this.tail.Next = newNode;
+                this.tail = newNode;
+            }
         }
 
         public void Add(int index, T value)
         {
-            throw new NotImplementedException();
+            ValidateIndex(index);
+            var enumerator = new ListEnumerator(this.head);
+            int currentIndex = 0;
+            while (currentIndex != index)
+            {
+                enumerator.MoveNext();
+                currentIndex++;
+            }
+            var newNode = new Node(value);
+            var foundNode = enumerator.ReturnCurrentNode();
+            newNode.Prev = foundNode.Prev;
+            newNode.Next = foundNode;
         }
 
         public T Get(int index)
         {
-            throw new NotImplementedException();
+            ValidateIndex(index);
+            var enumerable = new ListEnumerator(this.head);
+            int currentIndex = 0;
+            while (currentIndex != index)
+            {
+                enumerable.MoveNext();
+                currentIndex++;
+            }
+            return enumerable.Current;
         }
 
         public int IndexOf(T value)
         {
-            throw new NotImplementedException();
+            ValidateEmptyList();
+            var enumerator = new ListEnumerator(this.head);
+            int currentIndex = 0;   
+            while (enumerator.MoveNext() == true)
+            {
+                var currentValue = enumerator.Current;
+                if (Compare(currentValue, value) == true)
+                {
+                    break;
+                }
+                currentIndex++;
+            }
+            return currentIndex;
         }
 
         public T RemoveFirst()
         {
-            throw new NotImplementedException();
+            ValidateEmptyList();
+            var removedValue = this.head.Value;
+            this.head = this.head.Next;
+            this.head.Prev = null;
+            return removedValue;
         }
 
         public T RemoveLast()
         {
-            throw new NotImplementedException();
+            ValidateEmptyList();
+            this.tail.Prev.Next = null;
+            var removedValue = this.tail.Value;
+            this.tail = this.tail.Prev;
+            return removedValue;
+
         }
 
         /// <summary>
@@ -140,7 +215,10 @@ namespace DoublyLinkedListWorkshop
                     return this.current.Value;
                 }
             }
-
+            public Node ReturnCurrentNode()
+            {
+                return this.current;
+            }
             object IEnumerator.Current
             {
                 get
@@ -174,6 +252,27 @@ namespace DoublyLinkedListWorkshop
             {
                 this.current = null;
             }
+        }
+
+        private void ValidateIndex(int index)
+        {
+            if (index < 0 || index > this.Count - 1)
+            {
+                string errorMessage = "The index is outside the bounds of the List!";
+                throw new ArgumentOutOfRangeException(errorMessage);
+            }
+        }
+        private void ValidateEmptyList()
+        {
+            if (this.head == null)
+            {
+                string errorMessage = "The list is currently empty!";
+                throw new InvalidOperationException(errorMessage);
+            }
+        }
+        public bool Compare<T>(T valueOne, T valueTwo)
+        {
+            return EqualityComparer<T>.Default.Equals(valueOne, valueTwo);
         }
     }
 }
