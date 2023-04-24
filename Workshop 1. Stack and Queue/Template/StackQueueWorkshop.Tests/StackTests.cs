@@ -13,8 +13,8 @@ namespace LinearDataStructures
         public void InitTest()
         {
             //ToDo Select correct implementation
-            this.stack = new ArrayStack<int>();
-            /*this.stack = new LinkedStack<int>();*/
+            /*this.stack = new ArrayStack<int>();*/
+            this.stack = new LinkedStack<int>();
         }
 
         [TestMethod]

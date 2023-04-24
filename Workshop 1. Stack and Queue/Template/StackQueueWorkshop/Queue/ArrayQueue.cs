@@ -6,9 +6,12 @@ namespace StackQueueWorkshop.Queue
 {
     public class ArrayQueue<T> : IQueue<T>
     {
-        private T[] items = new T[4];
+        private const int InitialSize = 10;
+        
+        private T[] items = new T[InitialSize];
 
         private int headIndex;
+        private int tailIndex;
         private int itemsCount;        
 
         public int Size
@@ -29,24 +32,25 @@ namespace StackQueueWorkshop.Queue
 
         public void Enqueue(T element)
         {
+            int halfArraySize = this.items.Length / 2;
+            int emptyArraySpaces = this.headIndex + 1;
+            if (halfArraySize < emptyArraySpaces && halfArraySize > InitialSize) 
+            {
+                var newItemsArray = new T[halfArraySize];
+                Array.Copy(this.items, this.headIndex, newItemsArray, 0, this.itemsCount);
+                this.headIndex = 0;
+                this.tailIndex = this.itemsCount - 1;
+            }
+
             this.itemsCount++;
             int arrayMaxSize = this.items.Length;
             if (arrayMaxSize == this.itemsCount)
             {                
                 var newItemsArray = new T[arrayMaxSize * 2];
-                Array.Copy(this.items, newItemsArray, arrayMaxSize);
+                Array.Copy(this.items, newItemsArray, this.itemsCount);
                 this.items = newItemsArray;
             }
-            this.items[this.itemsCount-1] = element;
-
-            int halfArraySize = this.items.Length/2;
-            int emptyArraySpaces = Math.Abs(this.headIndex +1 - this.itemsCount);
-            if (halfArraySize < emptyArraySpaces)
-            {
-                var newItemsArray = new T[halfArraySize];
-                Array.Copy(this.items, this.headIndex, newItemsArray, 0, this.itemsCount);
-                this.headIndex = 0;
-            }
+            this.items[tailIndex++] = element;
         }
 
         public T Dequeue()
