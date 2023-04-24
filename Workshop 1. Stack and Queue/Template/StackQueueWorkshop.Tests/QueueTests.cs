@@ -13,8 +13,8 @@ namespace LinearDataStructures
         public void before()
         {
             //ToDo Select correct implementation
-            /*this.queue = new ArrayQueue<int>();*/
-            this.queue = new LinkedQueue<int>();
+            this.queue = new ArrayQueue<int>();
+            /*this.queue = new LinkedQueue<int>();*/
         }
 
         [TestMethod]
