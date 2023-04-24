@@ -13,7 +13,7 @@ namespace StackQueueWorkshop.Stack
         {
             get
             {
-                throw new NotImplementedException();
+               return this.size;
             }
         }
 
@@ -21,23 +21,41 @@ namespace StackQueueWorkshop.Stack
         {
             get
             {
-                throw new NotImplementedException();
+                return size == 0;
             }
         }
 
         public void Push(T element)
         {
-            throw new NotImplementedException();
+            var newTop = new Node<T>();
+            newTop.Data = element;
+            newTop.Next = this.top;
+            this.top = newTop;
+            this.size++;
         }
 
         public T Pop()
         {
-            throw new NotImplementedException();
+            if (this.size == 0)
+            {
+                string errorMessage = "There are no more elements in the Stack!";
+                throw new InvalidOperationException(errorMessage);
+            }
+            var popElement = this.top.Data;
+            this.top = this.top.Next;
+            size--;
+            return popElement;
+
         }
 
         public T Peek()
         {
-            throw new NotImplementedException();
+            if (this.size == 0)
+            {
+                string errorMessage = "There are no more elements in the Stack!";
+                throw new InvalidOperationException(errorMessage);
+            }
+            return this.top.Data;
         }
     }
 }

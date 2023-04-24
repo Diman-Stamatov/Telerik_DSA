@@ -14,7 +14,7 @@ namespace LinearDataStructures
         {
             //ToDo Select correct implementation
             this.stack = new ArrayStack<int>();
-            //this.stack = new LinkedStack<int>();
+            /*this.stack = new LinkedStack<int>();*/
         }
 
         [TestMethod]

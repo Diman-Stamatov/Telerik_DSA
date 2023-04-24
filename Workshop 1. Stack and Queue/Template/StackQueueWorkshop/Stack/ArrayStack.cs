@@ -6,14 +6,18 @@ namespace StackQueueWorkshop.Stack
 {
     public class ArrayStack<T> : IStack<T>
     {
-        private T[] items;
+        private T[] items = Array.Empty<T>();
         private int top;
 
         public int Size
         {
             get
             {
-                throw new NotImplementedException();
+                if (this.IsEmpty == true)
+                {
+                    return 0;
+                }
+                return this.top;
             }
         }
 
@@ -21,23 +25,55 @@ namespace StackQueueWorkshop.Stack
         {
             get
             {
-                throw new NotImplementedException();
+                bool isEmpty = false;
+                if (this.items == null || this.items.Length == 0)
+                {
+                    isEmpty = true;
+                }
+                return isEmpty;
             }
         }
 
         public void Push(T element)
         {
-            throw new NotImplementedException();
+            this.top++;
+            if (this.items== Array.Empty<T>())
+            {
+                this.items = new T[4];                
+            }
+            else if (this.top == this.items.Length)
+            {
+                var extendedArray = new T[this.items.Length * 2];
+                Array.Copy(this.items, 0, extendedArray, 0, this.items.Length);
+                
+                this.items = extendedArray;
+            }
+            this.items[this.top] = element;
+            
+
         }
 
         public T Pop()
         {
-            throw new NotImplementedException();
+            if (this.IsEmpty == true)
+            {
+                string errorMessage = "There are no items stored in the Stack!";
+                throw new InvalidOperationException(errorMessage);
+            }
+            var topItem = this.items[this.top];
+            this.items[this.top] = default;
+            this.top--;
+            return topItem;
         }
 
         public T Peek()
         {
-            throw new NotImplementedException();
+            if (this.IsEmpty == true)
+            {
+                string errorMessage = "There are no items stored in the Stack!";
+                throw new InvalidOperationException(errorMessage);
+            }
+            return this.items[this.top];
         }
     }
 }
