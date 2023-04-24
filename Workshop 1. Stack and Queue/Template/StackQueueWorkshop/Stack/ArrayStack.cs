@@ -37,14 +37,15 @@ namespace StackQueueWorkshop.Stack
         public void Push(T element)
         {
             this.top++;
-            if (this.items== Array.Empty<T>())
+            if (this.items == Array.Empty<T>())
             {
                 this.items = new T[4];                
             }
             else if (this.top == this.items.Length)
             {
-                var extendedArray = new T[this.items.Length * 2];
-                Array.Copy(this.items, 0, extendedArray, 0, this.items.Length);
+                int elementsCount = this.items.Length;
+                var extendedArray = new T[elementsCount * 2];
+                Array.Copy(this.items, 0, extendedArray, 0, elementsCount);
                 
                 this.items = extendedArray;
             }
