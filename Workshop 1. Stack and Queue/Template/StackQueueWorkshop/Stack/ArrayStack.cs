@@ -6,17 +6,15 @@ namespace StackQueueWorkshop.Stack
 {
     public class ArrayStack<T> : IStack<T>
     {
-        private T[] items = Array.Empty<T>();
+        private const int InitialSize = 10;
+        
+        private T[] items = new T[InitialSize];
         private int top;
 
         public int Size
         {
             get
-            {
-                if (this.IsEmpty == true)
-                {
-                    return 0;
-                }
+            {                
                 return this.top;
             }
         }
@@ -25,23 +23,13 @@ namespace StackQueueWorkshop.Stack
         {
             get
             {
-                bool isEmpty = false;
-                if (this.items == null || this.items.Length == 0)
-                {
-                    isEmpty = true;
-                }
-                return isEmpty;
+                return this.top == 0;
             }
         }
 
         public void Push(T element)
-        {
-            this.top++;
-            if (this.items == Array.Empty<T>())
-            {
-                this.items = new T[4];                
-            }
-            else if (this.top == this.items.Length)
+        {                        
+            if (this.top == this.items.Length)
             {
                 int elementsCount = this.items.Length;
                 var extendedArray = new T[elementsCount * 2];
@@ -50,15 +38,15 @@ namespace StackQueueWorkshop.Stack
                 this.items = extendedArray;
             }
             this.items[this.top] = element;
-            
-
+            this.top++;
         }
 
         public T Pop()
         {
             ValidateEmptyStack();
-            var topItem = this.items[this.top];
-            this.items[this.top] = default;
+            int topItemIndex = this.top-1;
+            var topItem = this.items[topItemIndex];
+            this.items[topItemIndex] = default;
             this.top--;
             return topItem;
         }
@@ -66,7 +54,8 @@ namespace StackQueueWorkshop.Stack
         public T Peek()
         {
             ValidateEmptyStack();
-            return this.items[this.top];
+            int topItemIndex = this.top - 1;
+            return this.items[topItemIndex];
         }
 
         private void ValidateEmptyStack()
