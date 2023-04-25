@@ -59,7 +59,6 @@ namespace DoublyLinkedListWorkshop
                 newNode.Next = this.head;
                 this.head = newNode;
             }
-
         }
 
         public void AddLast(T value)
@@ -81,7 +80,7 @@ namespace DoublyLinkedListWorkshop
         public void Add(int index, T value)
         {            
             ValidateIndex(index);   
-            Node newNode = new Node(value);
+            var newNode = new Node(value);
             if (this.Count == 0 && index == 0)
             {
                 this.head = newNode;
@@ -117,9 +116,7 @@ namespace DoublyLinkedListWorkshop
                 currentNode.Prev.Next = newNode;
                 currentNode.Prev = newNode;
                 newNode.Next = currentNode;
-
             }
-            
         }
 
         public T Get(int index)
