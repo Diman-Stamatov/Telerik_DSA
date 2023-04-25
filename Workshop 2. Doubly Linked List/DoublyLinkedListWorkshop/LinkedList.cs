@@ -78,8 +78,13 @@ namespace DoublyLinkedListWorkshop
         }
 
         public void Add(int index, T value)
-        {            
-            ValidateIndex(index);   
+        {
+            //Can't use the ValidateIndex method because the test is bad ¯\_(ツ)_/¯
+            if (index < 0 || index > this.Count)
+            {
+                string errorMessage = "The index is outside the bounds of the List!";
+                throw new ArgumentOutOfRangeException(errorMessage);
+            }
             var newNode = new Node(value);
             if (this.Count == 0 && index == 0)
             {
@@ -300,7 +305,7 @@ namespace DoublyLinkedListWorkshop
 
         private void ValidateIndex(int index)
         {
-            if (index < 0 || index > this.Count)
+            if (index < 0 || index > this.Count-1)
             {
                 string errorMessage = "The index is outside the bounds of the List!";
                 throw new ArgumentOutOfRangeException(errorMessage);
