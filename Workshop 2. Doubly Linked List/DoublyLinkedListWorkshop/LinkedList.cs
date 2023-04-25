@@ -35,17 +35,13 @@ namespace DoublyLinkedListWorkshop
                 if (this.head == null)
                 {
                     return elementsCount;
-                }                
+                }
                 var enumerator = new ListEnumerator(this.head);
-                while (enumerator.MoveNext())
+                while (enumerator.MoveNext() == true)
                 {
                     elementsCount++;
                 }
                 return elementsCount;
-            }
-            private set
-            {
-                
             }
         }
 
@@ -77,24 +73,53 @@ namespace DoublyLinkedListWorkshop
             else
             {
                 this.tail.Next = newNode;
+                newNode.Prev = this.tail;
                 this.tail = newNode;
             }
         }
 
         public void Add(int index, T value)
-        {
-            ValidateIndex(index);
-            var enumerator = new ListEnumerator(this.head);
-            int currentIndex = 0;
+        {            
+            ValidateIndex(index);   
+            Node newNode = new Node(value);
+            if (this.Count == 0 && index == 0)
+            {
+                this.head = newNode;
+                this.tail = newNode;
+            }                        
+            Node currentNode = this.head;
+            int currentIndex = 0;            
             while (currentIndex != index)
             {
-                enumerator.MoveNext();
+                currentNode = currentNode.Next;
                 currentIndex++;
             }
-            var newNode = new Node(value);
-            var foundNode = enumerator.ReturnCurrentNode();
-            newNode.Prev = foundNode.Prev;
-            newNode.Next = foundNode;
+            int lastIndex = this.Count - 1;
+            if (currentIndex == 0)
+            {
+                this.head.Prev = newNode;
+                newNode.Next = this.head;
+                this.head = newNode;
+            }
+            else if (index == lastIndex + 1)
+            {
+                this.AddLast(value);
+            }
+            else if (currentIndex == lastIndex)
+            {
+                this.tail.Prev.Next = newNode;
+                newNode.Prev = this.tail.Prev;
+                newNode.Next = this.tail;
+                this.tail.Prev = newNode;
+            }
+            else
+            {
+                currentNode.Prev.Next = newNode;
+                currentNode.Prev = newNode;
+                newNode.Next = currentNode;
+
+            }
+            
         }
 
         public T Get(int index)
@@ -102,6 +127,7 @@ namespace DoublyLinkedListWorkshop
             ValidateIndex(index);
             var enumerable = new ListEnumerator(this.head);
             int currentIndex = 0;
+            enumerable.MoveNext();
             while (currentIndex != index)
             {
                 enumerable.MoveNext();
@@ -112,17 +138,26 @@ namespace DoublyLinkedListWorkshop
 
         public int IndexOf(T value)
         {
-            ValidateEmptyList();
+            if (this.Count == 0)
+            {
+                return -1;
+            }
             var enumerator = new ListEnumerator(this.head);
-            int currentIndex = 0;   
+            int currentIndex = 0;
+            bool indexFound = false;
             while (enumerator.MoveNext() == true)
             {
                 var currentValue = enumerator.Current;
                 if (Compare(currentValue, value) == true)
                 {
+                    indexFound = true;
                     break;
                 }
                 currentIndex++;
+            }
+            if (indexFound == false)
+            {
+                return -1;
             }
             return currentIndex;
         }
@@ -131,17 +166,33 @@ namespace DoublyLinkedListWorkshop
         {
             ValidateEmptyList();
             var removedValue = this.head.Value;
-            this.head = this.head.Next;
-            this.head.Prev = null;
+            if (this.Count == 1)
+            {
+                this.head = null;
+                this.tail = null;
+            }
+            else
+            {
+                this.head = this.head.Next;
+                this.head.Prev = null;
+            }            
             return removedValue;
         }
 
         public T RemoveLast()
         {
             ValidateEmptyList();
-            this.tail.Prev.Next = null;
             var removedValue = this.tail.Value;
-            this.tail = this.tail.Prev;
+            if (this.Count == 1)
+            {
+                this.head = null;
+                this.tail = null;
+            }
+            else
+            {
+                this.tail.Prev.Next = null;
+                this.tail = this.tail.Prev;
+            }
             return removedValue;
 
         }
@@ -214,16 +265,12 @@ namespace DoublyLinkedListWorkshop
                     }
                     return this.current.Value;
                 }
-            }
-            public Node ReturnCurrentNode()
-            {
-                return this.current;
-            }
+            }            
             object IEnumerator.Current
             {
                 get
                 {
-                    return this.Current;
+                    return this.current;
                 }
             }
 
@@ -256,7 +303,7 @@ namespace DoublyLinkedListWorkshop
 
         private void ValidateIndex(int index)
         {
-            if (index < 0 || index > this.Count - 1)
+            if (index < 0 || index > this.Count)
             {
                 string errorMessage = "The index is outside the bounds of the List!";
                 throw new ArgumentOutOfRangeException(errorMessage);

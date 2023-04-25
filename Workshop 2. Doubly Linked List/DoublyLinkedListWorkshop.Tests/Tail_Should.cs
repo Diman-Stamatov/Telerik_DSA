@@ -20,7 +20,7 @@ namespace DoublyLinkedListWorkshop.Tests
         public void ReturnLastElement_When_NotEmptyList()
         {
             // Arrange
-            testList = Utils.CreateTestList(new int[] { 1, 2, 3 });
+            testList = Utils.CreateTestList(new int[] { 1,2,3 });
 
             // Act & Assert
             Assert.AreEqual(3, testList.Tail);
