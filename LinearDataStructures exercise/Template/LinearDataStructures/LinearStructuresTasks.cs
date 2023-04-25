@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using LinearDataStructures.Common;
@@ -56,20 +57,7 @@ namespace LinearDataStructures
         public static SinglyLinkedList<T> MergeLists<T>(SinglyLinkedList<T> list1, SinglyLinkedList<T> list2) where T : IComparable
         {            
             var mergedList = new SinglyLinkedList<T>();            
-            int listOneLength = GetListLength(list1);
-            int listTwoLength = GetListLength(list2);
-            if (listOneLength == 0 && listTwoLength == 0)
-            {
-                return mergedList;
-            }
-            else if (listOneLength == 0)
-            {
-                return list2;
-            }
-            else if (listTwoLength == 0)
-            {
-                return list1;
-            }
+            
             while (list1.Head != null && list2.Head != null)
             {
                 var valueOne = list1.Head.Value;
@@ -86,7 +74,6 @@ namespace LinearDataStructures
                     mergedList.AddFirst(valueTwo);
                     Console.WriteLine(valueTwo);
                     list2.RemoveFirst();
-
                 }
             }
 
@@ -127,14 +114,52 @@ namespace LinearDataStructures
 
         public static bool AreValidParentheses(string expression)
         {
-            // Add your implementation here.
-            throw new NotImplementedException();
+            var stack = new Stack<char>();
+            
+            foreach (var character in expression)
+            {
+                if (character == '(' || character == ')')
+                {
+                    if (character == ')' && (stack.Count == 0 || stack.Peek() != '('))
+                    {
+                        return false;
+                    }
+                    if (character == ')' && stack.Count != 0 && stack.Peek() == '(')
+                    {
+                        stack.Pop();
+                    }
+                    else
+                    {
+                        stack.Push(character);
+                    }
+                }
+            }
+            if(stack.Count !=0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public static string RemoveBackspaces(string sequence, char backspaceChar)
         {
-            // Add your implementation here.
-            throw new NotImplementedException();
+            var stack = new Stack<char>();
+            foreach (var character in sequence)
+            {
+                if (character == backspaceChar)
+                {
+                    if (stack.Count != 0)
+                    {
+                        stack.Pop();
+                    }
+                }
+                else
+                {
+                    stack.Push(character);
+                }
+            }
+            string output = string.Join("", stack.ToArray().Reverse());
+            return output;
         }
         public static int GetListLength<T>(SinglyLinkedList<T> list)
         {
