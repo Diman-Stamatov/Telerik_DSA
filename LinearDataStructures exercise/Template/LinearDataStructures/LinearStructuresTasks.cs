@@ -32,14 +32,37 @@ namespace LinearDataStructures
 
         public static Node<T> FindMiddleNode<T>(SinglyLinkedList<T> list)
         {
-            // Add your implementation here.
-            throw new NotImplementedException();
+            ValidateEmptyList(list);
+            int elementsCount = GetListLength<T>(list);
+            if (elementsCount == 1)
+            {
+                return list.Head;
+            }
+            var currentNode = list.Head;
+            int currentIndex = 0;
+            int middleIndex = elementsCount / 2;
+            while (currentNode.Next != null)
+            {
+                if (currentIndex == middleIndex)
+                {
+                    break;
+                }
+                currentIndex++;
+                currentNode = currentNode.Next;
+            }
+            return currentNode;
         }
 
         public static SinglyLinkedList<T> MergeLists<T>(SinglyLinkedList<T> list1, SinglyLinkedList<T> list2) where T : IComparable
         {
-            // Add your implementation here.
-            throw new NotImplementedException();
+            
+            var mergedList = new SinglyLinkedList<T>();
+            var currentNodeOne = list1.Head;
+            var currentNodeTwo = list2.Head;
+            int listOneLength = GetListLength(list1);
+            int listTwoLength = GetListLength(list2);
+            
+
         }
 
         public static SinglyLinkedList<T> ReverseList<T>(SinglyLinkedList<T> list)
@@ -78,6 +101,15 @@ namespace LinearDataStructures
         public static bool CompareGenerics<T>(T x, T y)
         {
             return EqualityComparer<T>.Default.Equals(x, y);
+        }
+        private static void ValidateEmptyList<T>(SinglyLinkedList<T> list)
+        {
+            int elementsCount = GetListLength(list);
+            if (elementsCount == 0)
+            {
+                string errorMessage = "The List is empty!";
+                throw new InvalidOperationException(errorMessage);
+            }
         }
     }
 }
