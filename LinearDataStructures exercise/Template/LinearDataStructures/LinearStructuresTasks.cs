@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 using LinearDataStructures.Common;
@@ -14,6 +15,17 @@ namespace LinearDataStructures
             if (listOneCount != listTwoCount)
             {
                 return false;
+            }
+            var nodeOne = list1.Head;
+            var nodeTwo = list2.Head;
+            while (nodeOne != null)
+            {
+                if (CompareGenerics(nodeOne.Value, nodeTwo.Value) == false)
+                {
+                    return false;
+                }
+                nodeOne = nodeOne.Next;
+                nodeTwo = nodeTwo.Next; 
             }
             return true;
         }
@@ -62,6 +74,10 @@ namespace LinearDataStructures
                 count++;
             }
             return count;
+        }
+        public static bool CompareGenerics<T>(T x, T y)
+        {
+            return EqualityComparer<T>.Default.Equals(x, y);
         }
     }
 }
