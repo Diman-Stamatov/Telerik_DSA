@@ -6,13 +6,13 @@ namespace StackQueueWorkshop.Queue
 {
     public class ArrayQueue<T> : IQueue<T>
     {
-        private const int InitialSize = 10;
+        private const int InitialSize = 5;
         
         private T[] items = new T[InitialSize];
 
-        private int headIndex;
-        private int tailIndex;
-        private int itemsCount;        
+        public int headIndex = 0;
+        public int tailIndex = 0;
+        private int itemsCount = 0;        
 
         public int Size
         {
@@ -32,49 +32,85 @@ namespace StackQueueWorkshop.Queue
 
         public void Enqueue(T element)
         {
-            int halfArraySize = this.items.Length / 2;
-            int emptyArraySpaces = this.headIndex + 1;
-            if (halfArraySize < emptyArraySpaces && halfArraySize > InitialSize) 
+            int maxElements = this.items.Length;
+            if (this.Size == maxElements)
             {
-                var newItemsArray = new T[halfArraySize];
-                Array.Copy(this.items, this.headIndex, newItemsArray, 0, this.itemsCount);
-                this.headIndex = 0;
+                var doubledArray = new T[maxElements * 2];
+                for (int index = 0; index < maxElements; index++)
+                {
+                    if (this.headIndex == maxElements)
+                    {
+                        this.headIndex = 0;
+                    }
+                    doubledArray[index] = this.items[this.headIndex++];
+                }
                 this.tailIndex = this.itemsCount - 1;
+                this.headIndex = 0;
+                this.items = doubledArray;
+                maxElements = this.items.Length;
+            }
+            if (this.Size == 0)
+            {
+                this.items[headIndex] = element;                
+                this.itemsCount++;                
+            }
+            else
+            {
+                this.tailIndex++;
+                if (this.tailIndex == maxElements)
+                {
+                    this.tailIndex = 0;
+                }
+                this.items[this.tailIndex] = element;
+                this.itemsCount++;
             }
 
-            this.itemsCount++;
-            int arrayMaxSize = this.items.Length;
-            if (arrayMaxSize == this.itemsCount)
-            {                
-                var newItemsArray = new T[arrayMaxSize * 2];
-                Array.Copy(this.items, newItemsArray, this.itemsCount);
-                this.items = newItemsArray;
-            }
-            this.items[tailIndex++] = element;
         }
 
         public T Dequeue()
         {
-            ValidateEmptyQueue();
+            ValidateNonEmptyQueue();
             var dequeuedElement = this.items[headIndex];
-            this.items[headIndex] = default;
-            this.headIndex++;
+            headIndex++;
             this.itemsCount--;
             return dequeuedElement;
         }
 
         public T Peek()
         {
-            ValidateEmptyQueue();
-            return this.items[this.headIndex];
+            ValidateNonEmptyQueue();
+            var dequeuedElement = this.items[headIndex];
+            return dequeuedElement;
         }
-        private void ValidateEmptyQueue()
+        private void ValidateNonEmptyQueue()
         {
             if (this.IsEmpty == true)
             {
                 string errorMessage = "The Queue is currently empty!";
                 throw new InvalidOperationException(errorMessage);
             }
+        }
+        public override string ToString()
+        {
+            var output = new StringBuilder();
+            for (int index = 0; index < itemsCount; index++)
+            {
+
+            }
+            int printIndex = headIndex;
+            for (int index = 0; index < itemsCount; index++)
+            {
+                int maxElements = this.items.Length;
+                if (printIndex == maxElements)
+                {
+                    printIndex = 0;
+                }
+                var item = this.items[printIndex++];
+                output.Append(item);
+                output.Append(" ");
+            }
+            
+            return output.ToString();   
         }
     }
 }
