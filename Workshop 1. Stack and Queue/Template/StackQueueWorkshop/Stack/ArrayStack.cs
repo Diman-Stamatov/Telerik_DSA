@@ -25,6 +25,7 @@ namespace StackQueueWorkshop.Stack
             {
                 return this.top == 0;
             }
+
         }
 
         public void Push(T element)
