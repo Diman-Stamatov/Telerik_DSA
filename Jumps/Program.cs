@@ -13,53 +13,46 @@ namespace Jumps
             int elements = int.Parse(Console.ReadLine());
             var elementsInput = Console.ReadLine().Split(' ').Select(int.Parse).ToArray();
             var outputValues = new int[elements];
-            int longestSequence = 0;
+
             int[] sortedElements = elementsInput.OrderByDescending(number => number).ToArray();
             int highestValueIndex = 0;
+            int currentValue = 0;
+            int jumpSequence = 0;
             int highestValue = sortedElements[highestValueIndex];
             for (int index = 0; index < elements; index++)
             {
-                int currentPosition = elementsInput[index];
-
-                if (currentPosition == highestValueIndex)
+                jumpSequence = 0;
+                currentValue = elementsInput[index];
+                if (currentValue == highestValue)
                 {
-                    highestValueIndex++;
+                    if (highestValueIndex != elements - 1)
+                    {
+                        highestValueIndex++;
+                    }
+
                     highestValue = sortedElements[highestValueIndex];
                     outputValues[index] = 0;
                     continue;
                 }
 
-
-
-                int jumpSequence = 0;
                 for (int element = index + 1; element < elements; element++)
                 {
-
-
-                    if (elementsInput[element] > currentPosition)
+                    
+                    if (elementsInput[element] > currentValue)
                     {
-                        currentPosition = elementsInput[element];
+                        currentValue = elementsInput[element];
                         jumpSequence++;
                     }
-                    if (currentPosition == highestValue)
+                    if (currentValue == highestValue)
                     {
                         break;
-
                     }
-
-                }
-                if (longestSequence < jumpSequence)
-                {
-                    longestSequence = jumpSequence;
                 }
 
                 outputValues[index] = jumpSequence;
-
-
-
             }
 
-            Console.WriteLine(longestSequence);
+            Console.WriteLine(outputValues.Max());
             string output = String.Join(" ", outputValues);
             Console.WriteLine(output);
         }
