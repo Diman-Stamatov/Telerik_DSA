@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Jumps
 {
@@ -21,7 +20,7 @@ namespace Jumps
             int highestValue = sortedElements[highestValueIndex];
             for (int index = 0; index < elements; index++)
             {
-                jumpSequence = 0;
+                
                 currentValue = elementsInput[index];
                 if (currentValue == highestValue)
                 {
@@ -50,6 +49,7 @@ namespace Jumps
                 }
 
                 outputValues[index] = jumpSequence;
+                jumpSequence = 0;
             }
 
             Console.WriteLine(outputValues.Max());
