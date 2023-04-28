@@ -12,44 +12,19 @@ namespace Jumps
             int elements = int.Parse(Console.ReadLine());
             var elementsInput = Console.ReadLine().Split(' ').Select(int.Parse).ToArray();
             var outputValues = new int[elements];
-
-            int[] sortedElements = elementsInput.OrderByDescending(number => number).ToArray();
-            int highestValueIndex = 0;
-            int currentValue = 0;
-            int jumpSequence = 0;
-            int highestValue = sortedElements[highestValueIndex];
+            
             for (int index = 0; index < elements; index++)
             {
-                
-                currentValue = elementsInput[index];
-                if (currentValue == highestValue)
+                for (int previousIndex = index-1; previousIndex <= 0; previousIndex--)
                 {
-                    if (highestValueIndex != elements - 1)
+                    int currentNumber = elementsInput[index];
+                    int previousNumber = elementsInput[previousIndex];
+                    if (previousNumber > currentNumber)
                     {
-                        highestValueIndex++;
+                        continue;
                     }
-
-                    highestValue = sortedElements[highestValueIndex];
-                    outputValues[index] = 0;
-                    continue;
+                    outputValues[previousIndex]++;
                 }
-
-                for (int element = index + 1; element < elements; element++)
-                {
-                    
-                    if (elementsInput[element] > currentValue)
-                    {
-                        currentValue = elementsInput[element];
-                        jumpSequence++;
-                    }
-                    if (currentValue == highestValue)
-                    {
-                        break;
-                    }
-                }
-
-                outputValues[index] = jumpSequence;
-                jumpSequence = 0;
             }
 
             Console.WriteLine(outputValues.Max());
