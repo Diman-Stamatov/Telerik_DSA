@@ -60,52 +60,14 @@ namespace InventoryManager
                 switch (command)
                 {
                     case "add":
-                        string name = input[1];
-                        float price = float.Parse(input[2]);
-                        string type = input[3];
-                        var newItem = new Item(name, price, type);
-                        if (database.TryAdd(name, newItem) == true)
-                        {
-                            Console.WriteLine($"Ok: Item {name} added successfully");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Error: Item {name} already exists");
-                        }
+                        AddCommand(input, database);
                         break;
                     case "filter by type":
-                        string filterType = input[3]; 
-                        var databaseToList = new List<Item>();
-                        foreach (var item in database)
-                        {
-                            databaseToList.Add(item.Value);
-                        }
-                        var byTypeList = databaseToList.Where(item=>item.Type == filterType)
-                            .OrderBy(item=>item.Price).ThenBy(item=>item.Name).ToList();
-
-                        int filteredCount = byTypeList.Count;
-                        if (filteredCount == 0)
-                        {
-                            Console.WriteLine($"Error: Type {filterType} does not exist");
-                        }
-                        if (filteredCount>10)
-                        {
-                            filteredCount = 10;
-                        }
-                        var output = new StringBuilder();
-                        for (int index = 0; index < filteredCount; index++)
-                        {
-                            string itemName = byTypeList[index].Name;
-                            string itemPrice = byTypeList[index].Price.ToString();
-                            output.Append($"{itemName}({itemPrice})");
-                            if (index !=filteredCount-1)
-                            {
-                                output.Append(", ");
-                            }
-                        }
-                        Console.WriteLine(output.ToString());
+                        FilterByTypeCommand(input, database);
                         break;
                     case "filter by price from":
+                        float filterPrice = float.Parse(input[4]);
+
                         break;
                     case "filter by price to":
                         break;
@@ -115,6 +77,55 @@ namespace InventoryManager
               
             }
             Console.WriteLine(database.Count);
+        }
+        private static void AddCommand(string[] input, Dictionary<string, Item> database)
+        {
+            string name = input[1];
+            float price = float.Parse(input[2]);
+            string type = input[3];
+            var newItem = new Item(name, price, type);
+            if (database.TryAdd(name, newItem) == true)
+            {
+                Console.WriteLine($"Ok: Item {name} added successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Error: Item {name} already exists");
+            }
+        }
+        private static void FilterByTypeCommand(string[] input, Dictionary<string, Item> database)
+        {
+            string filterType = input[3];
+            var databaseToList = new List<Item>();
+            foreach (var item in database)
+            {
+                databaseToList.Add(item.Value);
+            }
+            var byTypeList = databaseToList.Where(item => item.Type == filterType)
+                .OrderBy(item => item.Price).ThenBy(item => item.Name).ToList();
+
+            int filteredCount = byTypeList.Count;
+            if (filteredCount == 0)
+            {
+                Console.WriteLine($"Error: Type {filterType} does not exist");
+                return;
+            }
+            if (filteredCount > 10)
+            {
+                filteredCount = 10;
+            }
+            var output = new StringBuilder();
+            for (int index = 0; index < filteredCount; index++)
+            {
+                string itemName = byTypeList[index].Name;
+                string itemPrice = byTypeList[index].Price.ToString();
+                output.Append($"{itemName}({itemPrice})");
+                if (index != filteredCount - 1)
+                {
+                    output.Append(", ");
+                }
+            }
+            Console.WriteLine(output.ToString());
         }
     }
 }
