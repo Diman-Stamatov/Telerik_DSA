@@ -15,13 +15,13 @@ namespace Jumps
             
             for (int index = 0; index < elements; index++)
             {
-                for (int previousIndex = index-1; previousIndex <= 0; previousIndex--)
+                for (int previousIndex = index-1; previousIndex >=0; previousIndex--)
                 {
                     int currentNumber = elementsInput[index];
                     int previousNumber = elementsInput[previousIndex];
-                    if (previousNumber > currentNumber)
+                    if (previousNumber >= currentNumber)
                     {
-                        continue;
+                        break;
                     }
                     outputValues[previousIndex]++;
                 }
