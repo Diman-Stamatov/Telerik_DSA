@@ -1,4 +1,10 @@
 ﻿using System.Text;
+using System;
+using System.Collections.Generic;
+
+using System.Linq;
+
+
 
 namespace InventoryManager
 {
@@ -7,18 +13,23 @@ namespace InventoryManager
         public class Item
         {
             public string Name { get; }
-            public float Price { get; }
+            public double Price { get; }
             public string Type { get; }
-            public Item(string name, float price, string type)
+            public Item(string name, double price, string type)
             {
                 this.Name = name;
                 this.Price = price;
                 this.Type = type;
             }
         }
+        public static bool ordered = false;
+        public static StringBuilder output = new StringBuilder();
         static void Main(string[] args)
         {
             var database = new Dictionary<string, Item>();
+
+            var typeDictionary = new Dictionary<string, List<Item>>();
+            /*var typeDictionary = new Dictionary<string, List(Item>();*/
             while (true)
             {
                 string[] input = Console.ReadLine().Split(' ');
@@ -60,72 +71,179 @@ namespace InventoryManager
                 switch (command)
                 {
                     case "add":
-                        AddCommand(input, database);
+                        AddCommand(input, database, typeDictionary);
                         break;
                     case "filter by type":
-                        FilterByTypeCommand(input, database);
+                        FilterByTypeCommand(input, database, typeDictionary);
                         break;
                     case "filter by price from":
-                        float filterPrice = float.Parse(input[4]);
-
+                        FilterByPriceFromCommand(input, database);
                         break;
                     case "filter by price to":
+                        FilterByPriceToCommand(input, database);
                         break;
                     case "filter by price from min to max":
+                        FilterByPriceFromToCommand(input, database);
                         break;
                 }
-              
+
             }
-            Console.WriteLine(database.Count);
+            Console.WriteLine(output.ToString());
+
         }
-        private static void AddCommand(string[] input, Dictionary<string, Item> database)
+        private static void AddCommand(string[] input, Dictionary<string, Item> database, Dictionary<string, List<Item>> typeDictionary)
         {
             string name = input[1];
-            float price = float.Parse(input[2]);
+
+            double price = double.Parse(input[2]);
             string type = input[3];
             var newItem = new Item(name, price, type);
-            if (database.TryAdd(name, newItem) == true)
+            if (!database.ContainsKey(name))
             {
-                Console.WriteLine($"Ok: Item {name} added successfully");
+                if (!typeDictionary.ContainsKey(type))
+                {
+                    typeDictionary.Add(type, new List<Item>());
+                    typeDictionary[type].Add(newItem);
+                }
+                else
+                {
+                    typeDictionary[type].Add(newItem);
+                }
+
+                database.Add(name, newItem);
+                output.AppendLine($"Ok: Item {name} added successfully");
             }
             else
             {
-                Console.WriteLine($"Error: Item {name} already exists");
+                output.AppendLine($"Error: Item {name} already exists");
             }
         }
-        private static void FilterByTypeCommand(string[] input, Dictionary<string, Item> database)
+        private static void FilterByTypeCommand(string[] input, Dictionary<string, Item> database, Dictionary<string, List<Item>> typeDictionary)
         {
             string filterType = input[3];
-            var databaseToList = new List<Item>();
-            foreach (var item in database)
+            if (!typeDictionary.ContainsKey(filterType))
             {
-                databaseToList.Add(item.Value);
-            }
-            var byTypeList = databaseToList.Where(item => item.Type == filterType)
-                .OrderBy(item => item.Price).ThenBy(item => item.Name).ToList();
-
-            int filteredCount = byTypeList.Count;
-            if (filteredCount == 0)
-            {
-                Console.WriteLine($"Error: Type {filterType} does not exist");
+                output.AppendLine($"Error: Type {filterType} does not exist");
                 return;
             }
-            if (filteredCount > 10)
-            {
-                filteredCount = 10;
-            }
-            var output = new StringBuilder();
+            var databaseToList = typeDictionary[filterType];
+
+            var byTypeList = databaseToList.OrderBy(item => item.Price).ThenBy(item => item.Name).Take(10).ToList();
+
+            int filteredCount = byTypeList.Count;
+            output.Append("Ok: ");
             for (int index = 0; index < filteredCount; index++)
             {
                 string itemName = byTypeList[index].Name;
-                string itemPrice = byTypeList[index].Price.ToString();
-                output.Append($"{itemName}({itemPrice})");
+                double itemPrice = byTypeList[index].Price;
+                output.Append($"{itemName}({itemPrice:F2})");
                 if (index != filteredCount - 1)
                 {
                     output.Append(", ");
                 }
             }
-            Console.WriteLine(output.ToString());
+            output.AppendLine();
+
+        }
+        private static void FilterByPriceFromCommand(string[] input, Dictionary<string, Item> database)
+        {
+
+            double filterPrice = double.Parse(input[4]);
+            var databaseToList = new List<Item>();
+            foreach (var item in database)
+            {
+                databaseToList.Add(item.Value);
+            }
+            var byPriceList = databaseToList.Where(item => item.Price >= filterPrice)
+                .OrderBy(item => item.Price).ThenBy(item => item.Name).ThenBy(item => item.Type).Take(10).ToList();
+
+            int filteredCount = byPriceList.Count;
+            if (filteredCount == 0)
+            {
+                output.AppendLine("Ok:");
+                return;
+            }
+
+            output.Append("Ok: ");
+            for (int index = 0; index < filteredCount; index++)
+            {
+                string itemName = byPriceList[index].Name;
+                double itemPrice = byPriceList[index].Price;
+                output.Append($"{itemName}({itemPrice:F2})");
+                if (index != filteredCount - 1)
+                {
+                    output.Append(", ");
+                }
+            }
+            output.AppendLine();
+
+        }
+        private static void FilterByPriceToCommand(string[] input, Dictionary<string, Item> database)
+        {
+            double filterPrice = double.Parse(input[4]);
+            var databaseToList = new List<Item>();
+            foreach (var item in database)
+            {
+                databaseToList.Add(item.Value);
+            }
+            var byPriceList = databaseToList.Where(item => item.Price <= filterPrice)
+                .OrderBy(item => item.Price).ThenBy(item => item.Name).ThenBy(item => item.Type).Take(10).ToList();
+
+            int filteredCount = byPriceList.Count;
+            if (filteredCount == 0)
+            {
+                output.AppendLine("Ok:");
+                return;
+            }
+
+
+            output.Append("Ok: ");
+            for (int index = 0; index < filteredCount; index++)
+            {
+                string itemName = byPriceList[index].Name;
+                double itemPrice = byPriceList[index].Price;
+                output.Append($"{itemName}({itemPrice:F2})");
+                if (index != filteredCount - 1)
+                {
+                    output.Append(", ");
+                }
+            }
+            output.AppendLine();
+
+        }
+        private static void FilterByPriceFromToCommand(string[] input, Dictionary<string, Item> database)
+        {
+            double filterFromPrice = double.Parse(input[4]);
+            double filterToPrice = double.Parse(input[6]);
+            var databaseToList = new List<Item>();
+            foreach (var item in database)
+            {
+                databaseToList.Add(item.Value);
+            }
+            var byPriceList = databaseToList.Where(item => item.Price >= filterFromPrice && item.Price <= filterToPrice)
+                .OrderBy(item => item.Price).ThenBy(item => item.Name).ThenBy(item => item.Type).Take(10).ToList();
+
+            int filteredCount = byPriceList.Count;
+            if (filteredCount == 0)
+            {
+                output.AppendLine("Ok:");
+                return;
+            }
+
+
+            output.Append("Ok: ");
+            for (int index = 0; index < filteredCount; index++)
+            {
+                string itemName = byPriceList[index].Name;
+                double itemPrice = byPriceList[index].Price;
+                output.Append($"{itemName}({itemPrice:F2})");
+                if (index != filteredCount - 1)
+                {
+                    output.Append(", ");
+                }
+            }
+            output.AppendLine();
+
         }
     }
 }
