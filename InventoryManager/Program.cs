@@ -1,12 +1,14 @@
-﻿namespace InventoryManager
+﻿using System.Text;
+
+namespace InventoryManager
 {
     internal class Program
     {
         public class Item
         {
-            private string Name { get; }
-            private float Price { get; }   
-            private string Type { get; }
+            public string Name { get; }
+            public float Price { get; }
+            public string Type { get; }
             public Item(string name, float price, string type)
             {
                 this.Name = name;
@@ -72,6 +74,36 @@
                         }
                         break;
                     case "filter by type":
+                        string filterType = input[3]; 
+                        var databaseToList = new List<Item>();
+                        foreach (var item in database)
+                        {
+                            databaseToList.Add(item.Value);
+                        }
+                        var byTypeList = databaseToList.Where(item=>item.Type == filterType)
+                            .OrderBy(item=>item.Price).ThenBy(item=>item.Name).ToList();
+
+                        int filteredCount = byTypeList.Count;
+                        if (filteredCount == 0)
+                        {
+                            Console.WriteLine($"Error: Type {filterType} does not exist");
+                        }
+                        if (filteredCount>10)
+                        {
+                            filteredCount = 10;
+                        }
+                        var output = new StringBuilder();
+                        for (int index = 0; index < filteredCount; index++)
+                        {
+                            string itemName = byTypeList[index].Name;
+                            string itemPrice = byTypeList[index].Price.ToString();
+                            output.Append($"{itemName}({itemPrice})");
+                            if (index !=filteredCount-1)
+                            {
+                                output.Append(", ");
+                            }
+                        }
+                        Console.WriteLine(output.ToString());
                         break;
                     case "filter by price from":
                         break;
