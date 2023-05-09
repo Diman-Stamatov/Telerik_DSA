@@ -13,8 +13,16 @@ namespace HashTables.InClassActivity
         /// <returns>A dictionary of occurrences by word.</returns>
         public static Dictionary<string, int> CountOccurences(string[] words)
         {
-            // your implementation
-            throw new NotImplementedException();
+            var dictionary = new Dictionary<string, int>();
+            foreach (var word in words)
+            {
+                if (!dictionary.ContainsKey(word))
+                {
+                    dictionary.Add(word, 0);
+                }
+                dictionary[word]++;
+            }
+            return dictionary;
         }
 
         /// <summary>
@@ -25,8 +33,23 @@ namespace HashTables.InClassActivity
         /// <returns>An array containing the indices of the first two numbers that produce the target sum.</returns>
         public static int[] TwoSum(int[] numbers, int sum)
         {
-            // your implementation
-            throw new NotImplementedException();
+            var dictionary = new Dictionary<int, int>();
+            for (int index = 0; index < numbers.Length; index++)
+            {
+                int remainder = sum - numbers[index];
+                if (!dictionary.ContainsKey(remainder))
+                {
+                    dictionary.Add(numbers[index], index);
+                }
+                else
+                {
+                    return new int[] { dictionary[remainder], index };
+                }
+                
+            }
+            
+            
+            return new int[] {-1,-1};
         }
 
         /// <summary>
@@ -37,8 +60,16 @@ namespace HashTables.InClassActivity
         /// <returns>The count of special coins</returns>
         public static int SpecialCoins(string coins, string catalogue)
         {
-            // your implementation
-            throw new NotImplementedException();
+            var set = new HashSet<char>(catalogue.ToCharArray());
+            int count = 0;
+            foreach (var character in coins)
+            {
+                if (set.Contains(character))
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         /// <summary>
@@ -50,8 +81,30 @@ namespace HashTables.InClassActivity
         /// <returns>True if the two strings are isomorphic; otherwise, false.</returns>
         public static bool AreIsomorphic(string s1, string s2)
         {
-            // your implementation
-            throw new NotImplementedException();
+            if (s1.Length !=s2.Length)
+            {
+                return false;
+            }
+            var dictionary = new Dictionary<char, char>();
+            var dictioanryTwo = new Dictionary<char, char>();
+            for (int index = 0; index < s1.Length; index++)
+            {
+                if (!dictionary.TryAdd(s1[index], s2[index]))
+                {
+                    if (dictionary[s1[index]] != s2[index])
+                    {
+                        return false;
+                    }
+                }
+                if (!dictioanryTwo.TryAdd(s2[index], s1[index]))
+                {
+                    if (dictioanryTwo[s2[index]] != s1[index])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }
