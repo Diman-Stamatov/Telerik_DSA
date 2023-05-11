@@ -1,50 +1,45 @@
 ﻿using System;
+using System.Text;
 
 class Program
 {
+    static StringBuilder output = new StringBuilder();  
     static void Main(string[] args)
     {
         int stringLength = int.Parse(Console.ReadLine());
         string input = Console.ReadLine();
-        char[] symbols = new char[] { input[0], input[2] };
-        int numberOfSymbols = 2;
-        printAllKLengthRec(symbols, "", numberOfSymbols, stringLength);
+        char charOne = '0';
+        char charTwo = '1';
+        if (input[0] < input[2])
+        {
+            charOne = input[0];
+            charTwo = input[2];
+        }
+        else
+        {
+            charOne = input[2];
+            charTwo = input[0];
+        }
+        Variations(charOne, charTwo, "", stringLength);
+        Console.WriteLine(output.ToString());
     }
 
     
-    // The main recursive method
-    // to print all possible
-    // strings of length k
-    static void printAllKLengthRec(char[] symbols, string prefix, int numberOfSymbols, int stringLength)
+   
+    static void Variations(char charOne, char charTwo, string printString, int stringLength)
     {
-
-        // Base case: k is 0,
-        // print prefix
-        if (stringLength == 0)
+        if (stringLength == printString.Length)
         {
-            Console.WriteLine(prefix);
+            output.AppendLine(printString);
             return;
         }
-
-        // One by one add all characters
-        // from set and recursively
-        // call for k equals to k-1
-        for (int i = 0; i < numberOfSymbols; ++i)
-        {
-
-            // Next character of input added
-            string newPrefix = prefix + symbols[i];
-
-            // k is decreased, because
-            // we have added a new character
-            printAllKLengthRec(symbols, newPrefix, numberOfSymbols, stringLength - 1);
-        }
+        Variations(charOne, charTwo, printString + charOne, stringLength);
+        Variations(charOne, charTwo, printString + charTwo, stringLength);
     }
 
-    // Driver Code
+   
    
 }
 
-// This code is contributed by Ajit.
 
 
