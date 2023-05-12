@@ -38,7 +38,19 @@ namespace BST
 
         public IList<T> GetInOrder()
         {
-            throw new NotImplementedException();
+            var elements = new List<T>();
+            var stack = new Stack<BinarySearchTree<T>>();
+            var current = this;
+            stack.Push(current);
+            while (stack.Count !=0)
+            {
+                if (current.left !=null)
+                {
+                    current = 
+                }
+            }
+
+
         }
 
         public IList<T> GetPostOrder()
