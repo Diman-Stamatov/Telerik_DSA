@@ -7,9 +7,9 @@ namespace BST
     {
         T Value { get; }
 
-        IBinarySearchTree<T> Left { get; }
+        IBinarySearchTree<T> Left { get;  }
 
-        IBinarySearchTree<T> Right { get; }
+        IBinarySearchTree<T> Right { get;  }
 
         int Height { get; }
 
