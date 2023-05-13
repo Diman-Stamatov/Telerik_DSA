@@ -5,11 +5,11 @@ namespace BST
 {
     public interface IBinarySearchTree<T> where T : IComparable<T>
     {
-        T Value { get; }
+        T Value { get; set; }
 
-        IBinarySearchTree<T> Left { get;  }
+        IBinarySearchTree<T> Left { get; set; }
 
-        IBinarySearchTree<T> Right { get;  }
+        IBinarySearchTree<T> Right { get; set; }
 
         int Height { get; }
 

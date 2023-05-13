@@ -18,22 +18,30 @@ namespace BST
             this.left = null;
             this.right = null;
         }
+        public BinarySearchTree(IBinarySearchTree<T> anotherNode)
+        {
+            this.value = anotherNode.Value;
+            this.left = anotherNode.Left;
+            this.right = anotherNode.Right;
+        }
 
         public T Value
         {
             get => this.value;
+            set => this.value = value;
         }
 
         public IBinarySearchTree<T> Left
         {
             get => this.left;
+            set => this.left = value;
             
         }
 
         public IBinarySearchTree<T> Right
         {
             get => this.right;
-            
+            set => this.right = value;
         }
 
         public int Height
@@ -129,7 +137,7 @@ namespace BST
                 return false;
             }
 
-            return ReplaceSearch(value, this);           
+            return RemoveSearch(value, this);           
         }
         public void GetInOrderRec(IList<T> list, IBinarySearchTree<T> treeNode)
         {
@@ -201,10 +209,120 @@ namespace BST
                 return FindRec(element, treeNode.Right);
             }
         }
-        public bool ReplaceSearch(T element, IBinarySearchTree<T> treeNode)
+        public bool RemoveSearch(T element, IBinarySearchTree<T> treeNode)
         {
-            if (treeNode.Value.Equals(element))
+            if (treeNode.Value.Equals(element) )
             {
+                if (treeNode.Left == null && treeNode.Right == null)
+                {
+                    treeNode = null;
+                    return true;
+                }
+                else
+                {
+                    if (treeNode.Right == null)
+                    {
+                        treeNode.Value = treeNode.Left.Value;
+                        treeNode.Left = treeNode.Left.Left;
+                        return true;
+                    }
+                    else if (treeNode.Left == null)
+                    {
+                        treeNode.Value = treeNode.Right.Value;
+                        treeNode.Right = treeNode.Right.Right;
+                        return true;
+                    }
+                    else
+                    {
+                        var previous = treeNode;
+                        var current = treeNode.Left;
+                        if (current.Left == null && current.Right == null)
+                        {
+                            previous.Value = current.Value;
+                            previous.Left = null;
+                            return true;
+                        }
+                        while (current.Right != null)
+                        {
+                            previous = current;
+                            current = current.Right;
+                        }
+                        previous.Right = current.Left;                        
+                        treeNode.Value = current.Value;
+                        return true;
+                    }
+                }                
+            }
+
+            IBinarySearchTree<T> foundNode = null;
+            if (treeNode.Left != null && treeNode.Left.Value.Equals(element))
+            {
+                foundNode = treeNode.Left;
+                if (foundNode.Left == null && foundNode.Right == null)
+                {
+                    treeNode.Left = null;
+                    return true;
+                }
+                if (foundNode.Left == null)
+                {
+                    treeNode.Left = foundNode.Right;
+                    return true;
+                }
+                if (foundNode.Right == null)
+                {
+                    treeNode.Left = foundNode.Left;
+                    return true;
+                }
+                var previous = treeNode.Left;
+                var current = treeNode.Left.Left;
+                if (current.Left == null && current.Right == null)
+                {
+                    previous.Value = current.Value;
+                    previous.Left = null;
+                    return true;
+                }
+                while (current.Right != null)
+                {
+                    previous = current;
+                    current = current.Right;
+                }
+                previous.Right = current.Left;
+                foundNode.Value = current.Value;
+                return true;
+            }
+            if (treeNode.Right!= null && treeNode.Right.Value.Equals(element))
+            {
+                foundNode = treeNode.Right;
+                if (foundNode.Left == null && foundNode.Right == null)
+                {
+                    treeNode.Right = null;
+                    return true;
+                }
+                if (foundNode.Left == null)
+                {
+                    treeNode.Right = foundNode.Right;
+                    return true;
+                }
+                if (foundNode.Right == null)
+                {
+                    treeNode.Right = foundNode.Left;
+                    return true;
+                }
+                var previous = treeNode.Right;
+                var current = treeNode.Right.Left;
+                if (current.Left == null && current.Right == null)
+                {
+                    previous.Value = current.Value;
+                    previous.Left = null;
+                    return true;
+                }
+                while (current.Right != null)
+                {
+                    previous = current;
+                    current = current.Right;
+                }
+                previous.Right = current.Left;
+                foundNode.Value = current.Value;
                 return true;
             }
             if (treeNode.Left == null && treeNode.Right == null)
@@ -213,12 +331,14 @@ namespace BST
             }
             if (treeNode.Value.CompareTo(element) > 0)
             {
-                return FindRec(element, treeNode.Left);
+                return RemoveSearch(element, treeNode.Left);
             }
             else
             {
-                return FindRec(element, treeNode.Right);
+                return RemoveSearch(element, treeNode.Right);
             }
+
+            
         }
         public override string ToString()
         {
