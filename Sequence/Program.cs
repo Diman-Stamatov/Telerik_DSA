@@ -37,6 +37,7 @@ namespace Sequence
                 Console.WriteLine(firstNumber + 2);
                 return;
             }
+            numbers[0] = firstNumber;
             numbers[1] = firstNumber + 1;
             numbers[2] = firstNumber * 2 + 1;
             numbers[3] = firstNumber + 2;

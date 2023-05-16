@@ -11,8 +11,10 @@ namespace DoctorsOffice
     {
         static void Main(string[] args)
         {
-            var queue = new List<string>();
-            int startIndex = 0;
+                       
+            var head = new Node("head");
+            var tail = new Node("head");
+            int patientsCount = 0;
             var output = new StringBuilder();
             var peopleRegistry = new Dictionary<string, int>();
             while (true)
@@ -25,61 +27,88 @@ namespace DoctorsOffice
                 if (command[0] == "Append")
                 {
                     string name = command[1];
-                    queue.Add(name);
+                    if (head.value == "head" && head.value == tail.value)
+                    {
+                        head.value = name;
+                        tail.value = name;
+
+                    }
+                    else
+                    {
+                        var newNode = new Node(name);
+                        tail.next = newNode;
+                        newNode.prev = tail;
+                        tail = newNode;
+                    }
                     if (!peopleRegistry.ContainsKey(name))
                     {
                         peopleRegistry.Add(name, 0);
                     }
                     peopleRegistry[name]++;
                     output.AppendLine("OK");
+                    patientsCount++;
                 }
                 else if (command[0] == "Insert")
                 {
                     int position = int.Parse(command[1]);
                     string person = command[2];
-                    int peopleCount = queue.Count() - startIndex;
+                    
                     if (position == 0)
                     {
-                        if (startIndex ==0)
-                        {
-                            queue.Insert(startIndex, person);
-                            if (!peopleRegistry.ContainsKey(person))
-                            {
-                                peopleRegistry.Add(person, 0);
-                            }
-                            peopleRegistry[person]++;
-                            output.AppendLine("OK");
-                        }
-                        else
-                        {
-                            queue[--startIndex] = person;
-                            if (!peopleRegistry.ContainsKey(person))
-                            {
-                                peopleRegistry.Add(person, 0);
-                            }
-                            peopleRegistry[person]++;
-                            output.AppendLine("OK");
-                        }                        
-                    }                    
-                    else if (position == peopleCount)
-                    {
-                        queue.Add(person);
+                        var newNode = new Node(person);
+                        head.prev = newNode;
+                        newNode.next = head;
+                        head = newNode;
+                        
                         if (!peopleRegistry.ContainsKey(person))
                         {
                             peopleRegistry.Add(person, 0);
                         }
                         peopleRegistry[person]++;
                         output.AppendLine("OK");
+                        patientsCount++;
                     }
-                    else if (position > startIndex && position < peopleCount)
+                    else if (position == patientsCount)
                     {
-                        queue.Insert(position + startIndex, person);
+                        var newNode = new Node(person);
+                        tail.next = newNode;
+                        newNode.prev = tail;
+                        tail = newNode;    
                         if (!peopleRegistry.ContainsKey(person))
                         {
                             peopleRegistry.Add(person, 0);
                         }
                         peopleRegistry[person]++;
                         output.AppendLine("OK");
+                        patientsCount++;
+                    }
+                    else if (position > 0 && position < patientsCount)
+                    {
+                        var current = head;
+                        for (int index = 0; index < position; index++)
+                        {
+                            if (index != 0 && index != position -1)
+                            {
+                                current = current.next;
+                            }
+                        }
+                        var newNode = new Node(person);
+                        if (current.prev != null)
+                        {
+                            current.prev.next = newNode;
+                        }
+                        
+                        newNode.prev = current.prev;
+                        newNode.next = current;
+                        current.prev = newNode;
+                        
+                        if (!peopleRegistry.ContainsKey(person))
+                        {
+                            peopleRegistry.Add(person, 0);
+                        }
+                        peopleRegistry[person]++;
+                        output.AppendLine("OK");
+                        patientsCount++;
                     }
                     else
                     {
@@ -98,27 +127,54 @@ namespace DoctorsOffice
                     {
                         output.AppendLine(peopleRegistry[name].ToString());
                     }
-                    
+
                 }
-                else 
+                else
                 {
                     int count = int.Parse(command[1]);
-                    int peopleCount = queue.Count() - startIndex;
-                    if (count > peopleCount)
+                    
+                    if (count > patientsCount)
                     {
                         output.AppendLine("Error");
                         continue;
                     }
-                    var peopleToPrint = queue.GetRange(startIndex, count);
+                    var current = head;
+                    var peopleToPrint = new string[count];
+                    for (int index = 0; index < count; index++)
+                    {
+                        if (index !=0)
+                        {
+                            current = current.next;
+                        }
+                        
+                        peopleToPrint[index] = current.value;
+                        
+                    }
+                    head = current;
+                    head.prev = null;
+                    
                     foreach (var person in peopleToPrint)
                     {
                         peopleRegistry[person]--;
                     }
-                    startIndex += count;
-                    output.AppendLine(String.Join(" ", peopleToPrint));
+
+                    output.AppendLine(string.Join(" ", peopleToPrint));
+                    patientsCount -= count;
                 }
             }
             Console.WriteLine(output.ToString());
+        }
+        public class Node
+        {
+            public string value;
+            public Node next;
+            public Node prev;
+            public Node(string value)
+            {
+                this.value = value;
+                this.next = null;
+                this.prev = null;
+            }
         }
     }
 }
